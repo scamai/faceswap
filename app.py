@@ -5,6 +5,7 @@ import cv2
 from io import BytesIO
 import numpy as np
 from PIL import Image
+import base64
 
 app = Flask(__name__)
 preprocessor = Preprocessor()
@@ -53,7 +54,25 @@ def swap_faces():
     img_io = BytesIO()
     target_image_pil.save(img_io, 'JPEG')
     img_io.seek(0)
-    return send_file(img_io, mimetype='image/jpeg')
+    image_base64 = base64.b64encode(img_io.getvalue()).decode('utf-8')
+
+    response = {
+        'source_coordinates': {
+            'y0': source_y0_new,
+            'y1': source_y1_new,
+            'x0': source_x0_new,
+            'x1': source_x1_new,
+        },
+        'target_coordinates': {
+            'y0': target_y0_new,
+            'y1': target_y1_new,
+            'x0': target_x0_new,
+            'x1': target_x1_new,
+        },
+        'swapped_image': image_base64
+    }
+
+    return jsonify(response)
 
 
 if __name__ == '__main__':
