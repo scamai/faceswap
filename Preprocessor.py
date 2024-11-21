@@ -1,10 +1,11 @@
 from insightface.app import FaceAnalysis
 import numpy as np
+from constants import PROVIDER
 
 
 class Preprocessor:
     def __init__(self):
-        self.app = FaceAnalysis()
+        self.app = FaceAnalysis(providers=[PROVIDER])
         self.app.prepare(ctx_id=0)
         print('Preprocessor loaded')
 
