@@ -38,12 +38,12 @@ class Preprocessor:
         return img_cropped, y0_new, y1_new, x0_new, x1_new
 
     def get_cropped_face(self, face_img):
-        faces = self.app.get(face_img)
+        faces = self.app.get(face_img, max_num=1)
         if len(faces) == 0:
-            return None
+            return None, None, None, None, None
         bbox = faces[0]['bbox']
         bbox = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]]
         return Preprocessor.__crop_face(face_img, bbox)
 
     def get(self, face_image):
-        return self.app.get(face_image)
+        return self.app.get(face_image, max_num=1)

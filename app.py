@@ -32,14 +32,18 @@ def swap_faces():
     source_face, source_y0_new, source_y1_new, source_x0_new, source_x1_new = preprocessor.get_cropped_face(source_image)
     target_face, target_y0_new, target_y1_new, target_x0_new, target_x1_new = preprocessor.get_cropped_face(target_image)
 
-    if source_face is None or target_face is None:
-        return jsonify({'error': 'No face detected in source or target image'}), 400
+    if source_face is None:
+        return jsonify({'error': 'No face detected in source target image'}), 400
+    if target_face is None:
+        return jsonify({'error': 'No face detected in target image'}), 400
 
     source_face_app_format = preprocessor.get(source_face)
     target_face_app_format = preprocessor.get(target_face)
 
-    if len(source_face_app_format) == 0 or len(target_face_app_format) == 0:
-        return jsonify({'error': 'No face detected in source or target image'}), 400
+    if len(source_face_app_format) == 0:
+        return jsonify({'error': 'No face detected in source image'}), 400
+    if len(target_face_app_format) == 0:
+        return jsonify({'error': 'No face detected in target image'}), 400
 
     swapped_face = face_swapper.swap_faces(target_face, target_face_app_format[0], source_face_app_format[0])
     target_image_original[target_y0_new:target_y1_new, target_x0_new:target_x1_new] = swapped_face
@@ -53,5 +57,4 @@ def swap_faces():
 
 
 if __name__ == '__main__':
-    from waitress import serve
-    serve(app, host='0.0.0.0', port=6090, threads=1)
+    app.run()
